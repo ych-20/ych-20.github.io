@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Vue 双向绑定简单实现 | ych blog</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="hahahha">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.3753608f.js" as="script"><link rel="preload" href="/assets/js/2.6d97c077.js" as="script"><link rel="preload" href="/assets/js/10.e9bb46d6.js" as="script"><link rel="prefetch" href="/assets/js/11.497b4997.js"><link rel="prefetch" href="/assets/js/12.939571a4.js"><link rel="prefetch" href="/assets/js/13.f270d67c.js"><link rel="prefetch" href="/assets/js/14.fa6036b8.js"><link rel="prefetch" href="/assets/js/15.03a443cb.js"><link rel="prefetch" href="/assets/js/16.31414682.js"><link rel="prefetch" href="/assets/js/17.89c3a1bf.js"><link rel="prefetch" href="/assets/js/18.ece9649e.js"><link rel="prefetch" href="/assets/js/19.3a5dcb4d.js"><link rel="prefetch" href="/assets/js/3.a9da2341.js"><link rel="prefetch" href="/assets/js/4.ab35b75b.js"><link rel="prefetch" href="/assets/js/5.c516fb0f.js"><link rel="prefetch" href="/assets/js/6.747c4046.js"><link rel="prefetch" href="/assets/js/7.b0693e32.js"><link rel="prefetch" href="/assets/js/8.1c0c1e18.js"><link rel="prefetch" href="/assets/js/9.79c2ab24.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">ych blog</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Code</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>JS基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Vue</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/30-Vue/" aria-current="page" class="sidebar-link">Vue</a></li><li><a href="/30-Vue/10-双向绑定实现.html" class="active sidebar-link">Vue 双向绑定简单实现</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/30-Vue/10-双向绑定实现.html#概述" class="sidebar-link">概述</a></li><li class="sidebar-sub-header"><a href="/30-Vue/10-双向绑定实现.html#observer" class="sidebar-link">Observer</a></li><li class="sidebar-sub-header"><a href="/30-Vue/10-双向绑定实现.html#watcher" class="sidebar-link">Watcher</a></li><li class="sidebar-sub-header"><a href="/30-Vue/10-双向绑定实现.html#dep" class="sidebar-link">Dep</a></li><li class="sidebar-sub-header"><a href="/30-Vue/10-双向绑定实现.html#compiler" class="sidebar-link">Compiler</a></li><li class="sidebar-sub-header"><a href="/30-Vue/10-双向绑定实现.html#vue" class="sidebar-link">Vue</a></li></ul></li><li><a href="/30-Vue/20-Watcher和Computed.html" class="sidebar-link">Vue Watcher 和 computed</a></li><li><a href="/30-Vue/30-nextTick和事件处理.html" class="sidebar-link">Vue 中nextTick 和 事件的处理</a></li><li><a href="/30-Vue/40-Diff算法2.x和3.x.html" class="sidebar-link">Vue 中的 Diff算法</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>前端基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Node Js 相关</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Blob</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="vue-双向绑定简单实现"><a href="#vue-双向绑定简单实现" class="header-anchor">#</a> Vue 双向绑定简单实现</h1> <hr> <h2 id="概述"><a href="#概述" class="header-anchor">#</a> 概述</h2> <div class="language- extra-class"><pre class="language-text"><code>双向绑定主要通过 Observer、Compiler、Watcher、Dep 四个模块来实现，
+Observer通过 Object.defineProperty(Vue 3.x 通过proxy) 方法实现 对变量的劫持，
+Wather 主要是进行 完成 数据改变后的响应操作，
+Dep 用来收集Watcher,
+Compiler 主要是进行模板编译，生成一个render()方法。
+在模板编译时，在触发数据geter时 收集 Wacther 在数据改变时 通过Watcher 执行render()方法更新视图实现从数据到视图的绑定，
+同时在模板编译时，监听视图的input事件，在input事件触发时，同时修改数据。实现从视图到数据的绑定，从而实现双向绑定。
+
+// 双向绑定主要通过 Observer 对数据进行劫持，在模板编译（Compile）的时候，收集Watcher
+// Vue 通过 Object.defineProperty(Vue 3.x 通过proxy)劫持变量的 geter 和 seter，
+</code></pre></div><h2 id="observer"><a href="#observer" class="header-anchor">#</a> Observer</h2> <ul><li>遍历对象 进行劫持</li> <li>在首次触发get 的时候 收集Watcher</li> <li>触发 set 时 对收集的所有Watcher 通知更新</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">observe</span><span class="token punctuation">(</span><span class="token parameter">data</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> data <span class="token operator">===</span> <span class="token string">'object'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> key <span class="token keyword">in</span> data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">observe</span><span class="token punctuation">(</span>data<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span>
+            <span class="token function">defineReactive</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> key<span class="token punctuation">,</span>data<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">defineReactive</span><span class="token punctuation">(</span><span class="token parameter">data<span class="token punctuation">,</span> key<span class="token punctuation">,</span>val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> dep <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Dep</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    Object<span class="token punctuation">.</span><span class="token function">defineProperty</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> key<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+        enumerable<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        configurable<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>Dep<span class="token punctuation">.</span>target<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                dep<span class="token punctuation">.</span><span class="token function">addSub</span><span class="token punctuation">(</span>Dep<span class="token punctuation">.</span>target<span class="token punctuation">)</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> val
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+        <span class="token function">set</span><span class="token punctuation">(</span>newVal<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>val <span class="token operator">===</span> newVal<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token keyword">return</span>
+            <span class="token punctuation">}</span>
+            val <span class="token operator">=</span> newVal
+            dep<span class="token punctuation">.</span><span class="token function">notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="watcher"><a href="#watcher" class="header-anchor">#</a> Watcher</h2> <ul><li>目前只是一个简单的实现视图更新，所以只需要在更新时 执行cb（也就是compiler 生成的render函数）</li> <li>每一个组件都对应着一个 watcher</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">Watcher</span> <span class="token punctuation">{</span>
+    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">vm<span class="token punctuation">,</span> exp<span class="token punctuation">,</span> cb</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>vm <span class="token operator">=</span> vm
+        <span class="token keyword">this</span><span class="token punctuation">.</span>exp <span class="token operator">=</span> exp
+        <span class="token keyword">this</span><span class="token punctuation">.</span>cb <span class="token operator">=</span> cb
+        <span class="token comment">// 目前只是 简单的实现 更新视图的响应  所以 并不需要 回调函数的值</span>
+        <span class="token comment">// this.value = this.cb</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token function">notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">runner</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token function">runner</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">cb</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="dep"><a href="#dep" class="header-anchor">#</a> Dep</h2> <ul><li>收集Watcher</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">Dep</span> <span class="token punctuation">{</span>
+    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">vm</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>vm <span class="token operator">=</span> vm
+        <span class="token keyword">this</span><span class="token punctuation">.</span>subs <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">addSub</span><span class="token punctuation">(</span><span class="token parameter">watcher</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>subs<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>watcher<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>subs<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">watcher</span> <span class="token operator">=&gt;</span><span class="token punctuation">{</span>
+            watcher<span class="token punctuation">.</span><span class="token function">notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><h2 id="compiler"><a href="#compiler" class="header-anchor">#</a> Compiler</h2> <ul><li>在首次实例化的时候 生成一个render方法  用于每次数据更改后，更新视图</li> <li>compileNode 方法只处理了 Text类型的节点  和 有v-model 属性的 input元素</li> <li>只是简单的实现了一个 更新视图的方法，没有对事件进行处理，vue中会将dom 转化成AST，用虚拟节点的原理结合diff算法实现dom更新的操作，这里只是简单的达到效果即可。</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">Compiler</span> <span class="token punctuation">{</span>
+    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">vm<span class="token punctuation">,</span>el</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> fragment <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createDocumentFragment</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>vm <span class="token operator">=</span> vm
+        el<span class="token punctuation">.</span>childNodes<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">chNode</span> <span class="token operator">=&gt;</span><span class="token punctuation">{</span>
+            fragment<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>chNode<span class="token punctuation">.</span><span class="token function">cloneNode</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function-variable function">render</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">=&gt;</span><span class="token punctuation">{</span>
+            <span class="token keyword">const</span> fragmentClone <span class="token operator">=</span> fragment<span class="token punctuation">.</span><span class="token function">cloneNode</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compileNode</span><span class="token punctuation">(</span>fragmentClone<span class="token punctuation">)</span>
+            el<span class="token punctuation">.</span>innerHTML <span class="token operator">=</span> <span class="token string">''</span>
+            el<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>fragmentClone<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">compileNode</span><span class="token punctuation">(</span><span class="token parameter">node</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        node<span class="token punctuation">.</span>childNodes<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">chNode</span> <span class="token operator">=&gt;</span><span class="token punctuation">{</span>
+            console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>chNode<span class="token punctuation">,</span>chNode<span class="token punctuation">.</span>childNodes<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>chNode<span class="token punctuation">.</span>childNodes<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compileNode</span><span class="token punctuation">(</span>chNode<span class="token punctuation">)</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>chNode<span class="token punctuation">.</span>nodeType <span class="token operator">===</span> Node<span class="token punctuation">.</span><span class="token constant">TEXT_NODE</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token comment">// textContent 有多个 {{  }}  只会处理第一个  只简单实现一个 原理即可</span>
+                <span class="token comment">// '{{chNode.textContent}}  {{asdf21344}}'.replace(/\{\{(.+?)\}\}/g, (...args) =&gt; {</span>
+                chNode<span class="token punctuation">.</span>textContent <span class="token operator">=</span> chNode<span class="token punctuation">.</span>textContent<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\{\{(.+?)\}\}</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>args</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">const</span> dateKey <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>vm<span class="token punctuation">.</span>$data<span class="token punctuation">[</span>dateKey<span class="token punctuation">]</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="vue"><a href="#vue" class="header-anchor">#</a> Vue</h2> <ol><li>observe data，对data 进行一个劫持</li> <li>传入options 对el 进行 Compile 生成一个render 函数</li> <li>为当前组件 生成一个watcher</li> <li>初始化时  执行一次render方法</li></ol> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> Compiler <span class="token keyword">from</span> <span class="token string">&quot;./compiler.js&quot;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Watcher <span class="token keyword">from</span> <span class="token string">&quot;./watcher.js&quot;</span>
+<span class="token keyword">import</span> Dep <span class="token keyword">from</span> <span class="token string">&quot;./dep.js&quot;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>observe<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&quot;./observer.js&quot;</span><span class="token punctuation">;</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">Vue</span> <span class="token punctuation">{</span>
+    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">options</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> <span class="token punctuation">{</span>el<span class="token punctuation">,</span>data<span class="token punctuation">,</span>mounted<span class="token punctuation">}</span> <span class="token operator">=</span> options
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$options <span class="token operator">=</span> options
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$data <span class="token operator">=</span> data
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$el <span class="token operator">=</span> el
+        <span class="token function">observe</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+        <span class="token keyword">const</span> compile <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Compiler</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span>el<span class="token punctuation">)</span>
+        <span class="token keyword">const</span> watcher <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Watcher</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">,</span>compile<span class="token punctuation">.</span>render<span class="token punctuation">)</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$watcher <span class="token operator">=</span> watcher
+        <span class="token comment">// 首次render 的时候 将组件对应的 watcher 加入 dep中</span>
+        Dep<span class="token punctuation">.</span>target <span class="token operator">=</span> watcher
+        compile<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        Dep<span class="token punctuation">.</span>target <span class="token operator">=</span> <span class="token keyword">null</span>
+        <span class="token comment">// mounted()</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// main.js</span>
+<span class="token keyword">const</span> vue <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vue</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    el<span class="token operator">:</span> document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">&quot;#app&quot;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    data<span class="token operator">:</span><span class="token punctuation">{</span>
+        name<span class="token operator">:</span><span class="token string">'namenamenamenamename'</span><span class="token punctuation">,</span>
+        age<span class="token operator">:</span><span class="token string">'1234'</span><span class="token punctuation">,</span>
+        input<span class="token operator">:</span><span class="token string">'input'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/30-Vue/" class="prev router-link-active">
+        Vue
+      </a></span> <span class="next"><a href="/30-Vue/20-Watcher和Computed.html">
+        Vue Watcher 和 computed
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.3753608f.js" defer></script><script src="/assets/js/2.6d97c077.js" defer></script><script src="/assets/js/10.e9bb46d6.js" defer></script>
+  </body>
+</html>

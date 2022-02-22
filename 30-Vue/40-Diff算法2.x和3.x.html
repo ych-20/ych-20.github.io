@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Vue 中的 Diff算法 | ych blog</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="hahahha">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.3753608f.js" as="script"><link rel="preload" href="/assets/js/2.6d97c077.js" as="script"><link rel="preload" href="/assets/js/12.939571a4.js" as="script"><link rel="prefetch" href="/assets/js/10.e9bb46d6.js"><link rel="prefetch" href="/assets/js/11.497b4997.js"><link rel="prefetch" href="/assets/js/13.f270d67c.js"><link rel="prefetch" href="/assets/js/14.fa6036b8.js"><link rel="prefetch" href="/assets/js/15.03a443cb.js"><link rel="prefetch" href="/assets/js/16.31414682.js"><link rel="prefetch" href="/assets/js/17.89c3a1bf.js"><link rel="prefetch" href="/assets/js/18.ece9649e.js"><link rel="prefetch" href="/assets/js/19.3a5dcb4d.js"><link rel="prefetch" href="/assets/js/3.a9da2341.js"><link rel="prefetch" href="/assets/js/4.ab35b75b.js"><link rel="prefetch" href="/assets/js/5.c516fb0f.js"><link rel="prefetch" href="/assets/js/6.747c4046.js"><link rel="prefetch" href="/assets/js/7.b0693e32.js"><link rel="prefetch" href="/assets/js/8.1c0c1e18.js"><link rel="prefetch" href="/assets/js/9.79c2ab24.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">ych blog</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Code</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>JS基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Vue</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/30-Vue/" aria-current="page" class="sidebar-link">Vue</a></li><li><a href="/30-Vue/10-双向绑定实现.html" class="sidebar-link">Vue 双向绑定简单实现</a></li><li><a href="/30-Vue/20-Watcher和Computed.html" class="sidebar-link">Vue Watcher 和 computed</a></li><li><a href="/30-Vue/30-nextTick和事件处理.html" class="sidebar-link">Vue 中nextTick 和 事件的处理</a></li><li><a href="/30-Vue/40-Diff算法2.x和3.x.html" class="active sidebar-link">Vue 中的 Diff算法</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/30-Vue/40-Diff算法2.x和3.x.html#_2-x的diff算法" class="sidebar-link">2.x的Diff算法</a></li><li class="sidebar-sub-header"><a href="/30-Vue/40-Diff算法2.x和3.x.html#vue-3-x-中对于diff-算法的优化" class="sidebar-link">Vue 3.x 中对于Diff 算法的优化</a></li></ul></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>前端基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Node Js 相关</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Blob</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="vue-中的-diff算法"><a href="#vue-中的-diff算法" class="header-anchor">#</a> Vue 中的 Diff算法</h1> <hr> <h2 id="_2-x的diff算法"><a href="#_2-x的diff算法" class="header-anchor">#</a> 2.x的Diff算法</h2> <div class="language- extra-class"><pre class="language-text"><code>diff算法是用于父节点相同，对子节点更新的一种算法。
+一下说明全部以如下情况为例子：   
+真实DOM： A | B | C | D | E | F | G 
+old   ： A | B | C | D | E | F | G 
+new   ： A | B | D | E | I | C | F | G
+</code></pre></div><h3 id="比较步骤"><a href="#比较步骤" class="header-anchor">#</a> 比较步骤</h3> <p><code>通过双指针从两头往中间遍历：newStartIdx（oldStartIdx） 和 newEndIdx（oldEndIdx）</code></p> <ul><li>新前 和 旧前比较
+<ul><li>new A 和 old A 进行比较，相同则 newStartIdx++、oldStartIdx++。B同理</li></ul></li> <li>新后 和 旧后比较
+<ul><li>new G 和 old G 进行比较，相同则 newEndIdx--、oldEndIdx--。F同理</li></ul></li> <li>新前 和 旧后比较
+<ul><li>此时各个指针指向newStartIdx：D、newEndIdx：C、oldStartIdx：C、oldEndIdx：E</li> <li>D 和 E 对比 不相同 进行下一步对比</li></ul></li> <li>新后 和 旧前比较
+<ul><li>C 和 C 对比 相同 则 将真实DOM中C的位置移动到 oldEndIdx 的后面。 然后将 oldStartIdx++、newEndIdx--</li> <li>此时各个指针指向newStartIdx：D、newEndIdx：I、oldStartIdx：D、oldEndIdx：E</li> <li>继续newStartIdx开始重复 上述步骤</li></ul></li> <li>遍历旧数组进行查找(isSameNode) 如果找到 则进行移动 未找到则新增当前节点。
+<ul><li>如果节点经过上述四种情况都没匹配上，则去遍历old 看是否 有节点和 newStartIdx 匹配，根据结果进行响应的 移动、删除、新增DOM操作</li></ul></li> <li>old先遍历完成 则将new中未遍历的节点 插入到真实DOM中。反之则删除odl未处理的节点对应的DOM节点</li></ul> <h2 id="vue-3-x-中对于diff-算法的优化"><a href="#vue-3-x-中对于diff-算法的优化" class="header-anchor">#</a> Vue 3.x 中对于Diff 算法的优化</h2> <ol><li><p>分别从头尾开始遍历，找到第一个不匹配的项则停止进行下一步匹配。</p> <ul><li>从前往后匹配到B后结束 从后往前 匹配到F结束。这四个节点不需要移动</li> <li>旧节点剩下未遍历DOM：C | D | E</li> <li>新节点剩下未遍历DOM：D | E | I | C</li></ul></li> <li><p>判断old是否遍历完，遍历完则将new中剩下的全部新增（mount）</p></li> <li><p>判断new是否遍历完，遍历完则将old中剩下的全部删除（unmount）</p></li> <li><p>剩下的中间内容为乱序</p> <ul><li>根据new剩下的节点生成一个key和index的map，keyToNewIndexMap[D:3,E:4,I:5,C:6]（5.1）</li> <li>根据上述map生成一个等长的数组 newIndexToOldIndexMap[ 0, 0, 0, 0]（5.2）</li> <li>遍历old去匹配keyToNewIndexMap 如果匹配到 则把 oldIdx + 1填充到新数组（newIndexToOldIndexMap）对应的地方去，
+未匹配到的节点就是需要删除的节点。找到了patch一下，最后 newIndexToOldIndexMap 为 [ 4, 5, 0, 3]。（5.3）</li> <li>其实到这一步，已经很好办了，从尾到头循环一下newIndexToOldIndexMap
+是 0 的，说明是新增的数据，就 mount 进去
+非 0 的，说明在旧数据里，我们只要把它们移动到对应index的前面就行了
+但是这里还可以做一步优化（根据最长递增子序列 进行优化，即找到最长递增子序列[ 4, 5]不用移动 只需要新增0[I 到 DE后面]和移动3[C到I后]）</li></ul></li></ol></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/30-Vue/30-nextTick和事件处理.html" class="prev">
+        Vue 中nextTick 和 事件的处理
+      </a></span> <span class="next"><a href="/40-%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80/">
+        前端
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.3753608f.js" defer></script><script src="/assets/js/2.6d97c077.js" defer></script><script src="/assets/js/12.939571a4.js" defer></script>
+  </body>
+</html>

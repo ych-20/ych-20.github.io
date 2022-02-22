@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Vue Watcher 和 computed | ych blog</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="hahahha">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.3753608f.js" as="script"><link rel="preload" href="/assets/js/2.6d97c077.js" as="script"><link rel="preload" href="/assets/js/6.747c4046.js" as="script"><link rel="prefetch" href="/assets/js/10.e9bb46d6.js"><link rel="prefetch" href="/assets/js/11.497b4997.js"><link rel="prefetch" href="/assets/js/12.939571a4.js"><link rel="prefetch" href="/assets/js/13.f270d67c.js"><link rel="prefetch" href="/assets/js/14.fa6036b8.js"><link rel="prefetch" href="/assets/js/15.03a443cb.js"><link rel="prefetch" href="/assets/js/16.31414682.js"><link rel="prefetch" href="/assets/js/17.89c3a1bf.js"><link rel="prefetch" href="/assets/js/18.ece9649e.js"><link rel="prefetch" href="/assets/js/19.3a5dcb4d.js"><link rel="prefetch" href="/assets/js/3.a9da2341.js"><link rel="prefetch" href="/assets/js/4.ab35b75b.js"><link rel="prefetch" href="/assets/js/5.c516fb0f.js"><link rel="prefetch" href="/assets/js/7.b0693e32.js"><link rel="prefetch" href="/assets/js/8.1c0c1e18.js"><link rel="prefetch" href="/assets/js/9.79c2ab24.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">ych blog</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Code</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>JS基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Vue</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/30-Vue/" aria-current="page" class="sidebar-link">Vue</a></li><li><a href="/30-Vue/10-双向绑定实现.html" class="sidebar-link">Vue 双向绑定简单实现</a></li><li><a href="/30-Vue/20-Watcher和Computed.html" class="active sidebar-link">Vue Watcher 和 computed</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/30-Vue/20-Watcher和Computed.html#watch" class="sidebar-link">Watch</a></li><li class="sidebar-sub-header"><a href="/30-Vue/20-Watcher和Computed.html#computed" class="sidebar-link">Computed</a></li></ul></li><li><a href="/30-Vue/30-nextTick和事件处理.html" class="sidebar-link">Vue 中nextTick 和 事件的处理</a></li><li><a href="/30-Vue/40-Diff算法2.x和3.x.html" class="sidebar-link">Vue 中的 Diff算法</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>前端基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Node Js 相关</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Blob</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="vue-watcher-和-computed"><a href="#vue-watcher-和-computed" class="header-anchor">#</a> Vue Watcher 和 computed</h1> <hr> <h2 id="watch"><a href="#watch" class="header-anchor">#</a> Watch</h2> <h5 id="初始化-initwatcher"><a href="#初始化-initwatcher" class="header-anchor">#</a> 初始化(initWatcher)</h5> <div class="language- extra-class"><pre class="language-text"><code>1. 为每个watch 新建一个watcher
+2. 执行一次get()，通过this.getter()实现data对watch的watcher的收集
+</code></pre></div><ul><li>为每个watch 新建一个watcher</li> <li>执行一次get()，通过this.getter()实现data对watch的watcher的收集</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>    <span class="token comment">// 简化版</span>
+    <span class="token class-name">Watcher</span><span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function-variable function">get</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">// 这里会触发到data内属性的get 方法 从而收集到 watch 的 watcher</span>
+       <span class="token keyword">var</span> value <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getter</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>vm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+       <span class="token keyword">return</span> value
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><ul><li>watcher update的时候 this.value为旧值(oldVal) 新的值为this.get()</li> <li>deep的实现是 通过travel方法递归watch的属性保证每个子属性都收集到watch的watcher，从而实现深度监听</li></ul> <h2 id="computed"><a href="#computed" class="header-anchor">#</a> Computed</h2> <h5 id="_1-初始化-initcomputed"><a href="#_1-初始化-initcomputed" class="header-anchor">#</a> 1.初始化（initComputed）</h5> <ul><li>为computed属性创建getter，并在vm上定义computed属性。</li> <li>为computed属性创建Watcher，lazy=true</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> computedWatcherOptions <span class="token operator">=</span> <span class="token punctuation">{</span> lazy<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">initComputed</span> <span class="token punctuation">(</span><span class="token parameter">vm<span class="token operator">:</span> Component<span class="token punctuation">,</span> computed<span class="token operator">:</span> Object</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> watchers <span class="token operator">=</span> vm<span class="token punctuation">.</span>_computedWatchers <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> isSSR <span class="token operator">=</span> <span class="token function">isServerRendering</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> key <span class="token keyword">in</span> computed<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> userDef <span class="token operator">=</span> computed<span class="token punctuation">[</span>key<span class="token punctuation">]</span>
+    <span class="token keyword">const</span> getter <span class="token operator">=</span> <span class="token keyword">typeof</span> userDef <span class="token operator">===</span> <span class="token string">'function'</span> <span class="token operator">?</span> userDef <span class="token operator">:</span> userDef<span class="token punctuation">.</span>get
+		<span class="token comment">// ...</span>
+    <span class="token comment">// if (!isSSR) {</span>
+    <span class="token comment">//   watchers[key] = new Watcher(</span>
+    <span class="token comment">//     vm,</span>
+    <span class="token comment">//     getter || noop,</span>
+    <span class="token comment">//     noop,</span>
+    <span class="token comment">//     computedWatcherOptions</span>
+    <span class="token comment">//   )</span>
+    <span class="token comment">// }</span>
+		<span class="token comment">// ...</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>key <span class="token keyword">in</span> vm<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">defineComputed</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> key<span class="token punctuation">,</span> userDef<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> 
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">function</span> <span class="token function">defineComputed</span><span class="token punctuation">(</span><span class="token parameter">target<span class="token punctuation">,</span> key<span class="token punctuation">,</span> userDef</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    <span class="token comment">// 设置 set 为默认值，避免 computed 并没有设置 set</span>
+
+    <span class="token keyword">var</span> <span class="token function-variable function">set</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token comment">//  如果用户设置了set，就使用用户的set</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>userDef<span class="token punctuation">.</span>set<span class="token punctuation">)</span> set <span class="token operator">=</span> userDef<span class="token punctuation">.</span>set
+
+
+
+    Object<span class="token punctuation">.</span><span class="token function">defineProperty</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> key<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// 包装get 函数，主要用于判断计算缓存结果是否有效</span>
+
+        get<span class="token operator">:</span><span class="token function">createComputedGetter</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">,</span>
+
+        set<span class="token operator">:</span>set
+
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">createComputedGetter</span><span class="token punctuation">(</span><span class="token parameter">key</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">return</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// 获取到相应 key 的 computed-watcher</span>
+
+        <span class="token keyword">var</span> watcher <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_computedWatchers<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 如果 computed 依赖的数据变化，dirty 会变成true，从而重新计算，然后更新缓存值 watcher.value</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>watcher<span class="token punctuation">.</span>dirty<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            watcher<span class="token punctuation">.</span><span class="token function">evaluate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">}</span>
+        <span class="token comment">// 这里是 让 computed的watcher 收集的dep(date的dep) 收集到 组件(页面)的watcher</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>Dep<span class="token punctuation">.</span>target<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            watcher<span class="token punctuation">.</span><span class="token function">depend</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> watcher<span class="token punctuation">.</span>value
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h5 id="_2-运作流程"><a href="#_2-运作流程" class="header-anchor">#</a> 2.运作流程</h5> <ol><li>在初始化完成后，$mount()方法进行渲染模板时，会读取计算属性的值，从而触发计算属性的get方法(createComputedGetter创建的函数)。这时dirty = true，执行watcher.evaluate()。
+执行时会将Dep.target设置为computed的watcher(设置前会把原来的target给缓存起来，来实现给data收集页面的watcher)，这时候get中使用到的data属性都会将computed的watcher加入dep中（用于在data改变时将ditty 设为true），computed的watcher也会收集data的Dep
+（用于后续对data的dep中添加组件[页面]的watcher）</li> <li>通过watcher.depend();对使用到的data的dep 收集 页面的watcher。</li> <li>所以data改变时的运作流程: data改变 --&gt; 触发computed的watcher，将dirty 设为true --&gt; 触发组件（页面）的watcher更新视图 --&gt; 视图更新触发computed的get --&gt; dirty 为 true 则重新计算
+（执行getter） 为false 则直接返回缓存。 也就是这样实现对计算属性的缓存</li></ol> <h5 id="_3-流程图"><a href="#_3-流程图" class="header-anchor">#</a> 3.流程图</h5> <p><img src="/assets/img/20-0.1.15cd61ab.png" alt="avatar"></p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/30-Vue/10-双向绑定实现.html" class="prev">
+        Vue 双向绑定简单实现
+      </a></span> <span class="next"><a href="/30-Vue/30-nextTick和事件处理.html">
+        Vue 中nextTick 和 事件的处理
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.3753608f.js" defer></script><script src="/assets/js/2.6d97c077.js" defer></script><script src="/assets/js/6.747c4046.js" defer></script>
+  </body>
+</html>

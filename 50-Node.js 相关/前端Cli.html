@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>前端Cli | ych blog</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="hahahha">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.3753608f.js" as="script"><link rel="preload" href="/assets/js/2.6d97c077.js" as="script"><link rel="preload" href="/assets/js/16.31414682.js" as="script"><link rel="prefetch" href="/assets/js/10.e9bb46d6.js"><link rel="prefetch" href="/assets/js/11.497b4997.js"><link rel="prefetch" href="/assets/js/12.939571a4.js"><link rel="prefetch" href="/assets/js/13.f270d67c.js"><link rel="prefetch" href="/assets/js/14.fa6036b8.js"><link rel="prefetch" href="/assets/js/15.03a443cb.js"><link rel="prefetch" href="/assets/js/17.89c3a1bf.js"><link rel="prefetch" href="/assets/js/18.ece9649e.js"><link rel="prefetch" href="/assets/js/19.3a5dcb4d.js"><link rel="prefetch" href="/assets/js/3.a9da2341.js"><link rel="prefetch" href="/assets/js/4.ab35b75b.js"><link rel="prefetch" href="/assets/js/5.c516fb0f.js"><link rel="prefetch" href="/assets/js/6.747c4046.js"><link rel="prefetch" href="/assets/js/7.b0693e32.js"><link rel="prefetch" href="/assets/js/8.1c0c1e18.js"><link rel="prefetch" href="/assets/js/9.79c2ab24.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">ych blog</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Code</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>JS基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Vue</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>前端基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Node Js 相关</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/50-Node.js 相关/前端Cli.html" class="active sidebar-link">前端Cli</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Blob</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="前端cli"><a href="#前端cli" class="header-anchor">#</a> 前端Cli</h1> <hr> <h3 id="涉及的库"><a href="#涉及的库" class="header-anchor">#</a> 涉及的库</h3> <ul><li>commander ：参数解析 --help其实就借助了他~ 解析用户输入的命令</li> <li>inquirer ：交互式命令行工具，有他就可以实现命令行的选择功能</li> <li>download-git-repo ：拉取GitHub上的文件</li> <li>chalk ：帮我们在控制台中画出各种各样的颜色</li> <li>ora：小图标 （loading、succeed、warn等）</li> <li>metalsmith ：读取所有文件，实现模板渲染</li> <li>consolidate ：统一模板引擎</li></ul> <h3 id="创建项目"><a href="#创建项目" class="header-anchor">#</a> 创建项目</h3> <ul><li><strong>package.json</strong> 中的 bin属性  key为命令名称 value 为命令执行的文件路径,全局安装包后会自动注册到环境变量</li> <li>本地调试 需要 npm link 才能 只能命令</li></ul> <div class="language- extra-class"><pre class="language-text"><code>    npm init -y  // 初始化项目
+    //项目目录
+    ├── bin
+    │   └── test-cli  // 全局命令执行的根文件
+    ├── src
+    │   ├── main.js // 入口文件
+    │   └── utils   // 存放工具方法
+    |       |___constants.js  //  存放用户所需要的常量
+    |       |___common.js
+    │   ├── create.js // create 命令所有逻辑
+    │   ├── config.js // config 命令所有逻辑
+    │── .huskyrc    // git hook
+    │── .eslintrc.json // 代码规范校
+    ├── package.json
+    |__ README.md
+</code></pre></div><h3 id="入口文件-和-命令行相关参数"><a href="#入口文件-和-命令行相关参数" class="header-anchor">#</a> 入口文件 和  命令行相关参数</h3> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// ./bin/test-cli.js</span>
+#<span class="token operator">!</span><span class="token operator">/</span>usr<span class="token operator">/</span>bin<span class="token operator">/</span>env node
+<span class="token comment">//表示 我要用系统中的这个目录/user/bin/env的node环境来执行此文件，且需要注意必须放在文件开头。</span>
+<span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'../src/main'</span><span class="token punctuation">)</span>
+</code></pre></div><div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// ./src/main.js</span>
+<span class="token keyword">const</span> <span class="token punctuation">{</span>version<span class="token punctuation">,</span> name<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'../src/util/constants'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> program <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'commander'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token punctuation">{</span>mapActions<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./util/common'</span><span class="token punctuation">)</span>
+<span class="token comment">// 配置command</span>
+Reflect<span class="token punctuation">.</span><span class="token function">ownKeys</span><span class="token punctuation">(</span>mapActions<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">action</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span><span class="token punctuation">{</span>
+    program<span class="token punctuation">.</span><span class="token function">command</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">alias</span><span class="token punctuation">(</span>mapActions<span class="token punctuation">[</span>action<span class="token punctuation">]</span><span class="token punctuation">.</span>alias<span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">description</span><span class="token punctuation">(</span>mapActions<span class="token punctuation">[</span>action<span class="token punctuation">]</span><span class="token punctuation">.</span>description <span class="token operator">+</span> <span class="token string">'yyyyyyy'</span><span class="token punctuation">)</span> <span class="token comment">// 命令对应的描述</span>
+        <span class="token punctuation">.</span><span class="token function">action</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">=&gt;</span><span class="token punctuation">{</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>action <span class="token operator">===</span> <span class="token string">'*'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>  <span class="token comment">//访问不到对应的命令 就打印找不到命令</span>
+                <span class="token comment">// console.log(mapActions[action].description);</span>
+            <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+                <span class="token comment">// 分解命令 到文件里 有多少文件 就有多少配置 create config</span>
+                <span class="token function">require</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span>action<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token operator">...</span>process<span class="token punctuation">.</span>argv<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+program<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'--help'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\nExamples:'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Reflect<span class="token punctuation">.</span><span class="token function">ownKeys</span><span class="token punctuation">(</span>mapActions<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">action</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        mapActions<span class="token punctuation">[</span>action<span class="token punctuation">]</span><span class="token punctuation">.</span>examples<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">example</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+            console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>example<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+program<span class="token punctuation">.</span><span class="token function">version</span><span class="token punctuation">(</span>version<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>argv<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// process.argv就是用户在命令行中传入的参数</span>
+</code></pre></div><p>https://juejin.cn/post/6844904045845577742</p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/40-前端基础/前端路由.html" class="prev">
+        前端路由
+      </a></span> <span class="next"><a href="/blob/router/">
+        前端路由
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.3753608f.js" defer></script><script src="/assets/js/2.6d97c077.js" defer></script><script src="/assets/js/16.31414682.js" defer></script>
+  </body>
+</html>
