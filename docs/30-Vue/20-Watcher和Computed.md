@@ -1,4 +1,4 @@
-# Vue 双向绑定简单实现
+# Vue Watcher 和 computed
 ---
 
 
@@ -13,12 +13,12 @@
 ```js
     // 简化版
     Watcher.prototype.get = function() {
-    // 这里会触发到data内属性的get 方法 从而收集到 watch 的 watcher
-    var value = this.getter(this.vm);
-    return value
+       // 这里会触发到data内属性的get 方法 从而收集到 watch 的 watcher
+       var value = this.getter(this.vm);
+       return value
     };
 ```
-* watcher updata的时候 this.value为旧值(oldVal) 新的值为this.get()
+* watcher update的时候 this.value为旧值(oldVal) 新的值为this.get()
 * deep的实现是 通过travel方法递归watch的属性保证每个子属性都收集到watch的watcher，从而实现深度监听
 
 ## Computed
@@ -50,11 +50,7 @@ function initComputed (vm: Component, computed: Object) {
     } 
   }
 }
-function defineComputed(
-
-    target, key, userDef
-
-) {
+function defineComputed(target, key, userDef) {
 
     // 设置 set 为默认值，避免 computed 并没有设置 set
 
@@ -90,8 +86,7 @@ function createComputedGetter(key) {
             watcher.evaluate();
 
         }
-
-        // 这里是 月老computed 牵线的重点，让双方建立关系
+        // 这里是 让 computed的watcher 收集的dep(date的dep) 收集到 组件(页面)的watcher
 
         if (Dep.target) {
             watcher.depend();
@@ -110,4 +105,5 @@ function createComputedGetter(key) {
 2. 通过watcher.depend();对使用到的data的dep 收集 页面的watcher。
 3. 所以data改变时的运作流程: data改变 --> 触发computed的watcher，将dirty 设为true --> 触发组件（页面）的watcher更新视图 --> 视图更新触发computed的get --> dirty 为 true 则重新计算
    （执行getter） 为false 则直接返回缓存。 也就是这样实现对计算属性的缓存
+##### 3.流程图
    ![avatar](./20-0.1.png)
